@@ -41,26 +41,19 @@ const rl = readline.createInterface({
 const students = loadStudents();
 
 function promptUser() {
-    rl.question('Enter command. [S/SB/T/C/B/Q]: ', (input) => {
+    rl.question('Enter command. [S/T/C/B/Q]: ', (input) => {
         const [command, arg1, arg2] = input.split(' ');
         
         let startTime, endTime;
         if (!command) console.log('ERROR! You\'re required to enter a command.')
-        else if (command !== 'Q' && !arg1) console.log('ERROR! Each command requires supplemental info. Here\'s each one:\nS[tudents] <lastname>; SB <lastname> <busroute>; T[eacher] <lastname>; C[lassroom] <number>; B[us] <number>');
+        else if (command !== 'Q' && !arg1) console.log('ERROR! Each command requires supplemental info. Here\'s each one:\nS[tudents] <lastname>; T[eacher] <lastname>; C[lassroom] <number>; B[us] <number>');
         else switch (command.toLowerCase()) {
             case 's':
                 startTime = Date.now();
-                const results = findStudentByLastName(students, arg1);
-                results.forEach(student => console.log(`${student.StFirstName} ${student.StLastName} - Grade: ${student.Grade}, Classroom: ${student.Classroom}, Teacher: ${student.TFirstName} ${student.TLastName}, Bus: ${student.Bus}`));
-                endTime = Date.now();
-                console.log(`Search time: ${endTime - startTime}ms`);
-                break;
-
-            case 'sb':
-                startTime = Date.now();
-                if (!arg2) { console.log('No bus route specified!'); break; }
-                const busbyln = findBusRouteByStudent(students, arg1, arg2);
-                busbyln.forEach(student => console.log(`${student.StFirstName} ${student.StLastName} - Grade: ${student.Grade}, Classroom: ${student.Classroom}, Teacher: ${student.TFirstName} ${student.TLastName}, Bus: ${student.Bus}`));
+                let result;
+                if (!arg2 || isNaN(+arg2)) result = findStudentByLastName(students, arg1);
+                else result = findBusRouteByStudent(students, arg1, arg2);
+                result.forEach(student => console.log(`${student.StFirstName} ${student.StLastName} - Grade: ${student.Grade}, Classroom: ${student.Classroom}, Teacher: ${student.TFirstName} ${student.TLastName}, Bus: ${student.Bus}`));
                 endTime = Date.now();
                 console.log(`Search time: ${endTime - startTime}ms`);
                 break;
